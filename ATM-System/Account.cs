@@ -35,10 +35,10 @@ public class Account : IDisposable
     /// <summary>
     /// Initialize a new instance of <c>Account</c> class, with a unique identifier and a given balance.
     /// </summary>
-    /// <param name="balance"> The starting balance of the account.</param>
-    public Account(decimal balance) {
+    /// <param name="balance"> The starting balance of the account (possibly null).</param>
+    public Account(decimal? balance) {
         Account_Number = GenerateUniqueIdentifier();
-        Balance = balance;
+        Balance = balance.HasValue ? (decimal)balance : 0; // if balance is not null then set the given balance, otherwise set balance to 0.
     }
 
     /// <summary>
@@ -104,13 +104,5 @@ public class Account : IDisposable
     /// <returns>True if the account number exists, otherwise false.</returns>
     public static bool AccountExists(uint Identifier) {
         return allUniqueIdentifiers.Contains(Identifier);
-    }
-
-    /// <summary>
-    /// Returns all unique identifiers. <br/>SHOULD BE USED ONLY FOR TESTING PURPOSES!
-    /// </summary>
-    /// <returns>HashSet of all unique identifiers, in uint format.</returns>
-    public static HashSet<uint> GetAllIdentifiers() {
-        return allUniqueIdentifiers;
     }
 }

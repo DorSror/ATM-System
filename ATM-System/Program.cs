@@ -104,9 +104,19 @@ app.MapPost("/accounts/{account_number}/deposit", (string account_number, [FromB
 .WithOpenApi();
 
 // Extra API calls used for testing
-// Please note - these calls should be used for testing purposes only!
+// Please note - some of these calls should be used for testing purposes only.
 
-// Retrieve all accounts
+// Add an account with a (possibly) given balance. Note that we allow the creation of accounts with negative balance for testing purposes.
+app.MapPost("/accounts/newAccount", ([FromBody] decimal? balance) =>
+{
+    Account acc = new Account(balance);
+    accounts[acc.Account_Number] = acc;
+    return Results.Ok();
+})
+.WithName("Create new account")
+.WithOpenApi();
+
+// Retrieve all accounts. (Use for testing only!)
 app.MapGet("/accounts/allAccounts", () =>
 {
     var accs = accounts.Select(pair =>
@@ -121,7 +131,7 @@ app.MapGet("/accounts/allAccounts", () =>
 .WithName("Get all accounts")
 .WithOpenApi();
 
-// Delete a specified account.
+// Delete a specified account. (Use for testing only!)
 // Attempt converting the given account number into an unsigned integer. If failed, return a BadRequest error (format mismatch).
 // Otherwise, check if an account with a corresponding identifier exists. If failed, return a NotFound error (no such account was found).
 // If succeeded, dispose of the account and remove it from the accounts dictionary.
@@ -144,7 +154,7 @@ app.MapDelete("/accounts/{account_number}/delete", (string account_number) =>
 .WithName("Delete account")
 .WithOpenApi();
 
-// Drop all accounts - first dispose of all saved accounts, and then clear the accounts dictionary.
+// Drop all accounts - first dispose of all saved accounts, and then clear the accounts dictionary. (Use for testing only!)
 app.MapDelete("/accounts/dropAllAccounts", () => 
 {
     foreach (var acc in accounts.Values)
