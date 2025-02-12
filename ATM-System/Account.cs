@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace ATM_System;
 
 /// <summary>
-/// Class <c>Account</c> used to represent bank accounts with a unique identifier and balance.
+/// Class <c>Account</c> used to represent bank accounts with a unique identifier and balance. 
+/// <br/>Implements the <c>IDisposable</c> interface.
 /// </summary>
-public class Account
+public class Account : IDisposable
 {
     /// <summary>
     /// A static HashSet used to store all unique identifiers in use, used to ensure uniqueness of new identifiers.
@@ -32,6 +33,15 @@ public class Account
     }
 
     /// <summary>
+    /// Initialize a new instance of <c>Account</c> class, with a unique identifier and a given balance.
+    /// </summary>
+    /// <param name="balance"> The starting balance of the account.</param>
+    public Account(decimal balance) {
+        Account_Number = GenerateUniqueIdentifier();
+        Balance = balance;
+    }
+
+    /// <summary>
     /// Generates a unique account number to this account.
     /// </summary>
     /// <returns>A unique unsigned integer representing the account number.</returns>
@@ -49,7 +59,30 @@ public class Account
     }
 
     /// <summary>
-    /// Destructor that removes the account number from the used numbers list when the account object is being destroyed.
+    /// Withdraws (deducts) funds from the account by subtracting the requested amount from the balance.
+    /// </summary>
+    /// <param name="amount">The requested amount to withdraw.</param>
+    public void WithdrawFunds(decimal amount) {
+        Balance -= amount;
+    }
+
+    /// <summary>
+    /// Deposits (deducts) funds from the account by subtracting the requested amount from the balance.
+    /// </summary>
+    /// <param name="amount">The requested amount to withdraw.</param>
+    public void DepositFunds(decimal amount) {
+        Balance += amount;
+    }
+
+    /// <summary>
+    /// Manually dispose of the account instance by removing the account number from the unique identifiers set.
+    /// </summary>
+    public void Dispose() {
+        allUniqueIdentifiers.Remove(Account_Number);
+    }
+
+    /// <summary>
+    /// Destructor (finalizer) that removes the account number from the unique identifiers set.
     /// </summary>
     ~Account() {
         allUniqueIdentifiers.Remove(Account_Number);
@@ -59,8 +92,7 @@ public class Account
     /// Returns a string representation of the account's number and balance.
     /// </summary>
     /// <returns>A formatted string containing the account details.</returns>
-    public override string ToString()
-    {
+    public override string ToString() {
         return $"Account Number: {Account_Number}, Balance: {Balance}";
     }
 

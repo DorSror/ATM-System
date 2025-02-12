@@ -21,36 +21,140 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // In-memory storage of Accounts
-var accounts = new HashSet<Account>();
-for (int i = 0; i < 5; i++)
+var accounts = new SortedDictionary<uint, Account>();
+for (int i = 0; i < 5; i++) // init 5 accounts
 {
-    Account acc = new Account();
-    accounts.Add(acc);
+    Account acc = new Account(); // create new account.
+    accounts[acc.Account_Number] = acc; // key - unique identifier, value - the corresponding account isntance.
 }
 
-var summaries = new[]
+// Implementation of the first API call.
+// Attempt converting the given account number into an unsigned integer. If failed, return a BadRequest error (format mismatch).
+// Otherwise, check if an account with a corresponding identifier exists. If failed, return a NotFound error (no such account was found).
+// If succeeded, return a response containing the balance of the found account.
+app.MapGet("/accounts/{account_number}/balance", (string account_number) => 
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    try
+    {
+        uint identifier = uint.Parse(account_number);
+        if (!Account.AccountExists(identifier))
+            return Results.NotFound(new { detail = "Account was not found." });
+        return Results.Ok(new { accounts[identifier].Balance });
+    }
+    catch
+    {
+        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+    }
+})
+.WithName("Get balance")
+.WithOpenApi();
 
-app.MapGet("/weatherforecast", () =>
+// Implementation of the second API call.
+// Attempt converting the given account number into an unsigned integer. If failed, return a BadRequest error (format mismatch).
+// Otherwise, check if an account with a corresponding identifier exists. If failed, return a NotFound error (no such account was found).
+// If succeeded, check if the withdraw amount is greater than 0 and the balance - if so then return a corresponding bad request, otherwise withdraw the amount from the account.
+app.MapPost("/accounts/{account_number}/withdraw", (string account_number, [FromBody] decimal amount) => 
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
+    try
+    {
+        uint identifier = uint.Parse(account_number);
+        Account acc;
+        if (!Account.AccountExists(identifier))
+            return Results.NotFound(new { detail = "Account was not found." });
+        acc = accounts[identifier];
+        if (amount < 0)
+            return Results.BadRequest(new { detail = "Withdraw amount must be non-negative." });
+        if (acc.Balance < amount)
+            return Results.BadRequest(new { detail = "Cannot authorize operation - insufficient funds." });
+        acc.WithdrawFunds(amount);
+        return Results.Ok();
+    }
+    catch
+    {
+        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+    }
+})
+.WithName("Withdraw money")
+.WithOpenApi();
+
+// Implementation of the third API call.
+// Attempt converting the given account number into an unsigned integer. If failed, return a BadRequest error (format mismatch).
+// Otherwise, check if an account with a corresponding identifier exists. If failed, return a NotFound error (no such account was found).
+// If succeeded, check if the withdraw amount is greater than 0 - if so then return a bad request, otherwise deposit the amount into the account.
+app.MapPost("/accounts/{account_number}/deposit", (string account_number, [FromBody] decimal amount) => 
+{
+    try
+    {
+        uint identifier = uint.Parse(account_number);
+        Account acc;
+        if (!Account.AccountExists(identifier))
+            return Results.NotFound(new { detail = "Account was not found." });
+        acc = accounts[identifier];
+        if (amount < 0)
+            return Results.BadRequest(new { detail = "Deposit amount must be non-negative." });
+        acc.DepositFunds(amount);
+        return Results.Ok();
+    }
+    catch
+    {
+        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+    }
+})
+.WithName("Deposit money")
+.WithOpenApi();
+
+// Extra API calls used for testing
+// Please note - these calls should be used for testing purposes only!
+
+// Retrieve all accounts
+app.MapGet("/accounts/allAccounts", () =>
+{
+    var accs = accounts.Select(pair =>
+        new AccountSummary
         (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
+            pair.Value.Account_Number,
+            pair.Value.Balance
         ))
         .ToArray();
-    return forecast;
+    return accs;
 })
-.WithName("GetWeatherForecast")
+.WithName("Get all accounts")
+.WithOpenApi();
+
+// Delete a specified account.
+// Attempt converting the given account number into an unsigned integer. If failed, return a BadRequest error (format mismatch).
+// Otherwise, check if an account with a corresponding identifier exists. If failed, return a NotFound error (no such account was found).
+// If succeeded, dispose of the account and remove it from the accounts dictionary.
+app.MapDelete("/accounts/{account_number}/delete", (string account_number) => 
+{
+    try
+    {
+        uint identifier = uint.Parse(account_number);
+        if (!Account.AccountExists(identifier))
+            return Results.NotFound(new { detail = "Account was not found." });
+        accounts[identifier].Dispose();
+        accounts.Remove(identifier);
+        return Results.Ok();
+    }
+    catch
+    {
+        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+    }
+})
+.WithName("Drop all accounts")
+.WithOpenApi();
+
+// Drop all accounts - first dispose of all saved accounts, and then clear the accounts dictionary.
+app.MapDelete("/accounts/dropAllAccounts", () => 
+{
+    foreach (var acc in accounts.Values)
+        acc.Dispose();
+    accounts.Clear();
+    return Results.Ok();
+})
+.WithName("Drop all accounts")
 .WithOpenApi();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+record AccountSummary(uint identifier, decimal balance);
