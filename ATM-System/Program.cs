@@ -1,6 +1,5 @@
 using ATM_System;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Concurrent;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,12 +37,12 @@ app.MapGet("/accounts/{account_number}/balance", (string account_number) =>
     {
         uint identifier = uint.Parse(account_number);
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = "Account was not found." });
+            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
         return Results.Ok(new { accounts[identifier].Balance });
     }
     catch
     {
-        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
     }
 })
 .WithName("Get balance")
@@ -60,18 +59,18 @@ app.MapPost("/accounts/{account_number}/withdraw", (string account_number, [From
         uint identifier = uint.Parse(account_number);
         Account acc;
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = "Account was not found." });
+            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
         acc = accounts[identifier];
         if (amount < 0)
-            return Results.BadRequest(new { detail = "Withdraw amount must be non-negative." });
+            return Results.BadRequest(new { detail = APIConstants.InvalidBalanceWithdraw });
         if (acc.Balance < amount)
-            return Results.BadRequest(new { detail = "Cannot authorize operation - insufficient funds." });
+            return Results.BadRequest(new { detail = APIConstants.InsufficientFunds });
         acc.WithdrawFunds(amount);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
     }
 })
 .WithName("Withdraw money")
@@ -88,16 +87,16 @@ app.MapPost("/accounts/{account_number}/deposit", (string account_number, [FromB
         uint identifier = uint.Parse(account_number);
         Account acc;
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = "Account was not found." });
+            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
         acc = accounts[identifier];
         if (amount < 0)
-            return Results.BadRequest(new { detail = "Deposit amount must be non-negative." });
+            return Results.BadRequest(new { detail = APIConstants.InvalidBalanceDeposit });
         acc.DepositFunds(amount);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
     }
 })
 .WithName("Deposit money")
@@ -141,14 +140,14 @@ app.MapDelete("/accounts/{account_number}/delete", (string account_number) =>
     {
         uint identifier = uint.Parse(account_number);
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = "Account was not found." });
+            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
         accounts[identifier].Dispose();
         accounts.Remove(identifier);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
+        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
     }
 })
 .WithName("Delete account")
