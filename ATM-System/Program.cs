@@ -141,7 +141,7 @@ app.MapDelete("/accounts/{account_number}/delete", (string account_number) =>
         return Results.BadRequest(new { detail = "Invalid account number format - must be an unsigned integer." });
     }
 })
-.WithName("Drop all accounts")
+.WithName("Delete account")
 .WithOpenApi();
 
 // Drop all accounts - first dispose of all saved accounts, and then clear the accounts dictionary.

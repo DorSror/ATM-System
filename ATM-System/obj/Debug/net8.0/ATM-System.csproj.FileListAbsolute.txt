@@ -31,3 +31,4 @@ c:\Users\Dor24\VSCode Cloned Git Repos\ATM-System\ATM-System\obj\Debug\net8.0\re
 c:\Users\Dor24\VSCode Cloned Git Repos\ATM-System\ATM-System\obj\Debug\net8.0\ATM-System.pdb
 c:\Users\Dor24\VSCode Cloned Git Repos\ATM-System\ATM-System\obj\Debug\net8.0\ATM-System.genruntimeconfig.cache
 c:\Users\Dor24\VSCode Cloned Git Repos\ATM-System\ATM-System\obj\Debug\net8.0\ref\ATM-System.dll
+c:\Users\Dor24\VSCode Cloned Git Repos\ATM-System\ATM-System\obj\Debug\net8.0\ATM-System.sourcelink.json
