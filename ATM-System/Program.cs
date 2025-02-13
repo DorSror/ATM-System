@@ -11,11 +11,17 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+/*
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+*/
+// For our purposes, we will use the Swagger UI, although this is not recommended outside of development.
+// We simply remove the check app.Environment.IsDevelopment() (if app is in development).
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -37,12 +43,12 @@ app.MapGet("/accounts/{account_number}/balance", (string account_number) =>
     {
         uint identifier = uint.Parse(account_number);
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
-        return Results.Ok(new { accounts[identifier].Balance });
+            return Results.NotFound(APIConstants.AccountNotFound);
+        return Results.Ok(accounts[identifier].Balance);
     }
     catch
     {
-        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
+        return Results.BadRequest(APIConstants.InvalidIndentifierFormat);
     }
 })
 .WithName("Get balance")
@@ -59,18 +65,18 @@ app.MapPost("/accounts/{account_number}/withdraw", (string account_number, [From
         uint identifier = uint.Parse(account_number);
         Account acc;
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
+            return Results.NotFound(APIConstants.AccountNotFound);
         acc = accounts[identifier];
         if (amount < 0)
-            return Results.BadRequest(new { detail = APIConstants.InvalidBalanceWithdraw });
+            return Results.BadRequest(APIConstants.InvalidBalanceWithdraw);
         if (acc.Balance < amount)
-            return Results.BadRequest(new { detail = APIConstants.InsufficientFunds });
+            return Results.BadRequest(APIConstants.InsufficientFunds);
         acc.WithdrawFunds(amount);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
+        return Results.BadRequest(APIConstants.InvalidIndentifierFormat);
     }
 })
 .WithName("Withdraw money")
@@ -87,16 +93,16 @@ app.MapPost("/accounts/{account_number}/deposit", (string account_number, [FromB
         uint identifier = uint.Parse(account_number);
         Account acc;
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
+            return Results.NotFound(APIConstants.AccountNotFound);
         acc = accounts[identifier];
         if (amount < 0)
-            return Results.BadRequest(new { detail = APIConstants.InvalidBalanceDeposit });
+            return Results.BadRequest(APIConstants.InvalidBalanceDeposit);
         acc.DepositFunds(amount);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
+        return Results.BadRequest(APIConstants.InvalidIndentifierFormat );
     }
 })
 .WithName("Deposit money")
@@ -140,14 +146,14 @@ app.MapDelete("/accounts/{account_number}/delete", (string account_number) =>
     {
         uint identifier = uint.Parse(account_number);
         if (!Account.AccountExists(identifier))
-            return Results.NotFound(new { detail = APIConstants.AccountNotFound });
+            return Results.NotFound(APIConstants.AccountNotFound);
         accounts[identifier].Dispose();
         accounts.Remove(identifier);
         return Results.Ok();
     }
     catch
     {
-        return Results.BadRequest(new { detail = APIConstants.InvalidIndentifierFormat });
+        return Results.BadRequest(APIConstants.InvalidIndentifierFormat);
     }
 })
 .WithName("Delete account")
@@ -166,4 +172,4 @@ app.MapDelete("/accounts/dropAllAccounts", () =>
 
 app.Run();
 
-record AccountSummary(uint identifier, decimal balance);
+record AccountSummary(uint Account_Number, decimal Balance);

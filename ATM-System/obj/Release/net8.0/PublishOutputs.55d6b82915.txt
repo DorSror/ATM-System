@@ -1,0 +1,12 @@
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\ATM-System.exe
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\appsettings.Development.json
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\appsettings.json
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\ATM-System.dll
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\ATM-System.deps.json
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\ATM-System.runtimeconfig.json
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\ATM-System.pdb
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\Microsoft.OpenApi.dll
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Dor24\AppData\Local\Temp\917e588f-999e-413f-a3a2-bca445cf168f\Swashbuckle.AspNetCore.SwaggerUI.dll
