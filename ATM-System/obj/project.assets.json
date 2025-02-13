@@ -465,11 +465,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System\\ATM-System\\ATM-System.csproj",
+      "projectUniqueName": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System-1\\ATM-System\\ATM-System.csproj",
       "projectName": "ATM-System",
-      "projectPath": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System\\ATM-System\\ATM-System.csproj",
+      "projectPath": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System-1\\ATM-System\\ATM-System.csproj",
       "packagesPath": "C:\\Users\\Dor24\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System\\ATM-System\\obj\\",
+      "outputPath": "C:\\Users\\Dor24\\VSCode Cloned Git Repos\\ATM-System-1\\ATM-System\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Dor24\\AppData\\Roaming\\NuGet\\NuGet.Config",
